@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: groot
+      MONGO_INITDB_ROOT_PASSWORD: rocket
+    ports:
+      - 27017:27017
+
+  mongo-express:
+    image: mongo-express
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: groot
+      ME_CONFIG_MONGODB_ADMINPASSWORD: rocket
+    ports:
+      - 3064:8081

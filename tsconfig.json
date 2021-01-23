@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "target": "esnext",
+    "lib": ["esnext"],
+    "esModuleInterop": true,
+
+    // alias
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["./*"],
+      "@core/*": ["./modules/core/*"],
+    }
+  }
+}

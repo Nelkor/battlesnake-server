@@ -1,0 +1,61 @@
+{
+  "env": {
+    "es2017": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "tsconfig.json",
+    "tsconfigRootDir": "."
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "camelcase": "error",
+    "no-multi-spaces": "error",
+    "no-multiple-empty-lines": "error",
+    "space-infix-ops": "error",
+    "no-return-assign": "error",
+    "no-use-before-define": "error",
+    "no-unused-expressions": "error",
+    "prefer-destructuring": ["error", {"object": true, "array": false}],
+    "comma-spacing": ["error", { "before": false, "after": true }],
+    "keyword-spacing": ["error", { "before": true, "after": true }],
+    "arrow-spacing": ["error", { "before": true, "after": true }],
+    "semi": ["error", "never"],
+    "space-in-parens": ["error", "never"],
+    "func-call-spacing": ["error", "never"],
+    "comma-dangle": ["error", "always-multiline"],
+    "eol-last": ["error", "always"],
+    "no-trailing-spaces": 2,
+    "curly": ["error", "all"],
+    "object-curly-spacing": ["error", "always"],
+    "array-bracket-spacing": ["error", "never"],
+    "array-bracket-newline": ["error", { "multiline": true }],
+    "brace-style": ["error", "1tbs"],
+    "quotes": ["error", "single"],
+    "max-len": ["error", { "code": 80 }],
+    "quote-props": ["error", "consistent-as-needed"],
+    "linebreak-style": ["error", "unix"],
+    "padded-blocks": ["error", "never"],
+    "object-shorthand": ["error", "always", {
+      "avoidQuotes": true,
+      "avoidExplicitReturnArrows": true
+    }],
+    "padding-line-between-statements": ["error",
+      { "blankLine": "always", "prev": "*", "next": "return" },
+      { "blankLine": "always", "prev": ["let", "const"], "next": "*" },
+      { "blankLine": "any", "prev": ["let", "const"], "next": ["let", "const"] },
+      { "blankLine": "always", "prev": ["if"], "next": ["*"] },
+      { "blankLine": "always", "prev": ["*"], "next": ["if"] }
+    ],
+
+    "@typescript-eslint/type-annotation-spacing": "error"
+  }
+}
