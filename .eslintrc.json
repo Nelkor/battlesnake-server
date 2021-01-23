@@ -31,6 +31,7 @@
     "semi": ["error", "never"],
     "space-in-parens": ["error", "never"],
     "func-call-spacing": ["error", "never"],
+    "function-paren-newline": ["error", "multiline"],
     "comma-dangle": ["error", "always-multiline"],
     "eol-last": ["error", "always"],
     "no-trailing-spaces": 2,
