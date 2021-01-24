@@ -1,17 +1,59 @@
 import { IncomingMessage, ServerResponse } from 'http'
+import { parse } from 'querystring'
 
-import { Db } from 'mongodb'
+import { PATH_LIMIT, MAX_BODY_SIZE } from '@core/config'
+import { breakConnection } from '@core/server/http-errors'
 
-export const createRequestHandler = (db: Db) => async (
+export const onHttpRequest = async (
   req: IncomingMessage,
   res: ServerResponse,
 ): Promise<void> => {
-  const collection = db.collection('items')
+  const { headers, method, url } = req
+  const [pathString, queryString] = url.split('?')
 
-  const item = { value: Math.random() }
+  const path = pathString.split('/', PATH_LIMIT).slice(1).filter(Boolean)
+  const params = parse(queryString)
 
-  await collection.insertOne(item)
+  // token, user...
+  // const token = getToken(headers.cookie)
 
-  res.write(`Inserted ${item.value}`)
-  res.end()
+  const contentLength = +headers['content-length']
+
+  const hasBody = method === 'POST'
+    && contentLength
+    && contentLength <= MAX_BODY_SIZE
+
+  const body = hasBody ? [] : null
+
+  let bodySize = 0
+
+  const onData = chunk => {
+    bodySize += chunk.length
+
+    if (!body || bodySize > MAX_BODY_SIZE) {
+      breakConnection(req, res)
+
+      return
+    }
+
+    body.push(chunk)
+  }
+
+  const onClose = () => {
+    const payload = {
+      headers,
+      method,
+      path,
+      params,
+      // user,
+      body: body ? Buffer.concat(body) : null,
+    }
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8')
+
+    console.log(res, payload)
+  }
+
+  req.on('data', onData)
+  req.on('close', onClose)
 }

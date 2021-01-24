@@ -4,6 +4,7 @@
     "outDir": "dist",
     "target": "esnext",
     "lib": ["esnext"],
+    "moduleResolution": "node",
     "esModuleInterop": true,
 
     // alias

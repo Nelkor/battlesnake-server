@@ -1,18 +1,22 @@
 version: '3'
 
 services:
-  mongo:
-    image: mongo
+  db:
+    image: mariadb
     environment:
-      MONGO_INITDB_ROOT_USERNAME: groot
-      MONGO_INITDB_ROOT_PASSWORD: rocket
+      MYSQL_DATABASE: battlesnake
+      MYSQL_USER: snake
+      MYSQL_PASSWORD: battle
+      MYSQL_ROOT_PASSWORD: groot
+    volumes:
+      - ./volumes/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - 27017:27017
+      - 3306:3306
 
-  mongo-express:
-    image: mongo-express
+  panel:
+    image: phpmyadmin
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: groot
-      ME_CONFIG_MONGODB_ADMINPASSWORD: rocket
+      PMA_USER: snake
+      PMA_PASSWORD: battle
     ports:
-      - 3064:8081
+      - 3064:80

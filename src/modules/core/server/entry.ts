@@ -1,20 +1,17 @@
 import { createServer } from 'http'
 
-import { Db } from 'mongodb'
 import { Server } from 'ws'
 
-import { createRequestHandler } from '@core/server/http-app'
+import { PORT } from '@core/config'
+import { onHttpRequest } from '@core/server/http-app'
 import { onRealtimeConnection } from '@core/server/ws-app'
 
-export const startServer = (port: number, db: Db): void => {
-  const onHttpRequest = createRequestHandler(db)
-
+export const startServer = (): void => {
   const server = createServer(onHttpRequest)
   const wsServer = new Server({ server })
 
   wsServer.on('connection', onRealtimeConnection)
+  server.listen(PORT)
 
-  server.listen(port)
-
-  console.log(`Started at ${port} port`)
+  console.log(`Started at ${PORT} port`)
 }

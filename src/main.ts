@@ -1,6 +1,4 @@
-import { connect } from '@core/db/driver'
 import { startServer } from '@core/server/entry'
+import { test } from '@core/db/driver'
 
-const PORT = 3063
-
-connect().then(db => startServer(PORT, db))
+test().then(startServer)

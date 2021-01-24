@@ -4,3 +4,8 @@ export type User = {
   lcName: string
   password: string
 }
+
+export type TokenData = {
+  id: number
+  expires: number
+}

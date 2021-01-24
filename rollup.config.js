@@ -29,6 +29,6 @@ export default {
 
     // modules to install
     'ws',
-    'mongodb',
+    'mysql2/promise',
   ],
 }

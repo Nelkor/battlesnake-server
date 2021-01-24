@@ -1,29 +1,20 @@
-import { Db, MongoClient } from 'mongodb'
+import { createConnection } from 'mysql2/promise'
 
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}
+export const test = async (): Promise<void> => {
+  const connection = await createConnection({
+    host: 'localhost',
+    user: 'snake',
+    password: 'battle',
+    database: 'battlesnake',
+  })
 
-const name = 'groot'
-const password = 'rocket'
-const dbName = 'snake'
+  const [rows] = await connection.query('SELECT * FROM `users`')
 
-const url = `mongodb://${name}:${password}@localhost:27017`
-const dbms = new MongoClient(url, options)
-
-export const connect = async (): Promise<Db> => {
-  try {
-    console.log('Trying to connect to mongo, wait...')
-
-    const client = await dbms.connect()
-
-    console.log('Successfully connected!')
-
-    return client.db(dbName)
-  } catch (e) {
-    console.log('Error with connection to mongo')
-
-    process.exit(0)
+  if (!Array.isArray(rows)) {
+    return
   }
+
+  rows.forEach(row => console.log(row.id, row.name, row.nameHash))
+
+  connection.end()
 }
