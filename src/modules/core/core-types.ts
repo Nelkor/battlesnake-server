@@ -1,7 +1,7 @@
 export type User = {
   id: number
   name: string
-  lcName: string
+  nameHash: number
   password: string
 }
 
