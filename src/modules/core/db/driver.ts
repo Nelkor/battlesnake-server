@@ -5,7 +5,7 @@ import { User } from '@core/core-types'
 let connection: Connection = null
 let connectionPromise: Promise<void> = null
 
-const connect = async (): Promise<void> => {
+export const connect = async (): Promise<void> => {
   try {
     connection = await createConnection({
       user: 'snake',
@@ -26,6 +26,7 @@ const queryArray = async <T>(
 
     return (Array.isArray(rows) ? rows : []) as T[]
   } catch (e) {
+    console.error(e)
     console.log('Отсутствует подключение к СУБД!')
 
     if (!connectionPromise) {
