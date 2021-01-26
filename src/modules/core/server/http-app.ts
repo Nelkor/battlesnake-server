@@ -4,6 +4,8 @@ import { parse } from 'querystring'
 import { PATH_LIMIT, MAX_BODY_SIZE } from '@core/config'
 import { breakConnection } from '@core/server/http-errors'
 
+import { test } from '@core/db/driver'
+
 export const onHttpRequest = async (
   req: IncomingMessage,
   res: ServerResponse,
@@ -16,6 +18,9 @@ export const onHttpRequest = async (
 
   // token, user...
   // const token = getToken(headers.cookie)
+
+  // TODO delete
+  const users = await test()
 
   const contentLength = +headers['content-length']
 
@@ -39,7 +44,7 @@ export const onHttpRequest = async (
     body.push(chunk)
   }
 
-  const onClose = () => {
+  const onEnd = () => {
     const payload = {
       headers,
       method,
@@ -49,11 +54,14 @@ export const onHttpRequest = async (
       body: body ? Buffer.concat(body) : null,
     }
 
-    res.setHeader('Content-Type', 'text/html; charset=utf-8')
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8')
 
-    console.log(res, payload)
+    // TODO delete
+    res.write(payload.method + '\n\n')
+    users.forEach(user => res.write(`${user.id}: ${user.name}\n`))
+    res.end()
   }
 
   req.on('data', onData)
-  req.on('close', onClose)
+  req.on('end', onEnd)
 }

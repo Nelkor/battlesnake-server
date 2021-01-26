@@ -2,6 +2,7 @@ import typescript from '@rollup/plugin-typescript'
 import alias from '@rollup/plugin-alias'
 
 import { terser } from 'rollup-plugin-terser'
+import { string } from 'rollup-plugin-string'
 
 import builtins from 'builtin-modules'
 
@@ -23,6 +24,7 @@ export default {
   plugins: [
     typescript(),
     alias(),
+    string({ include: '**/*.sql' }),
   ],
   external: [
     ...builtins,

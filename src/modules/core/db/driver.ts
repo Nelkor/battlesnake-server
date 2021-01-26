@@ -2,8 +2,10 @@ import { createConnection, Connection } from 'mysql2/promise'
 
 import { User } from '@core/core-types'
 
+import selectAllUsers from './select-all-users.sql'
+import insertUser from './insert-user.sql'
+
 let connection: Connection = null
-let connectionPromise: Promise<void> = null
 
 export const connect = async (): Promise<void> => {
   try {
@@ -12,47 +14,41 @@ export const connect = async (): Promise<void> => {
       password: 'battle',
       database: 'battlesnake',
     })
+
+    // TODO писать в файл
+    connection.on('end', () => console.log('Connection "end"'))
+    connection.on('close', () => console.log('Connection "close"'))
+    connection.on('error', () => console.log('Connection "error"'))
+    connection.on('remove', () => console.log('Connection "remove"'))
   } catch (e) {
     console.error('Connection to MariaDB failed')
   }
 }
 
-const queryArray = async <T>(
+const queryData = async <T>(
   sql: string,
   values: (string | number)[] = [],
 ): Promise<T[]> => {
-  try {
-    const [rows] = await connection.query(sql, values)
+  const [rows] = await connection.query(sql, values)
 
-    return (Array.isArray(rows) ? rows : []) as T[]
-  } catch (e) {
-    console.error(e)
-    console.log('Отсутствует подключение к СУБД!')
-
-    if (!connectionPromise) {
-      console.log('Процесса подключения тоже нет, запускаю...')
-
-      connectionPromise = connect()
-    }
-
-    console.log('Есть процесс подключения, ждём...')
-
-    await connectionPromise
-
-    connectionPromise = null
-
-    console.log('Готово!')
-
-
-    // TODO сделать что-нибудь с повторением
-    const [rows] = await connection.query(sql, values)
-
-    return (Array.isArray(rows) ? rows : []) as T[]
-  }
+  return (Array.isArray(rows) ? rows : []) as T[]
 }
 
-export const test = async (): Promise<void> => {
-  const users = await queryArray<User>('SELECT * FROM `users`')
+const queryAction = async (
+  sql: string,
+  values: (string | number)[] = [],
+): Promise<void> => {
+  await connection.query(sql, values)
+}
 
-  users.forEach(user => console.log(user.id, user.name, user.nameHash))
+export const test = async (): Promise<User[]> => {
+  const newUser = [
+    Math.random().toString(36).slice(2),
+    Math.round(Math.random() * 1e6),
+    'default_password',
+  ]
+
+  await queryAction(insertUser, newUser)
+
+  return queryData<User>(selectAllUsers)
 }
