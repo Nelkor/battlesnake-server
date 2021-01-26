@@ -17,9 +17,12 @@ const connect = async (): Promise<void> => {
   }
 }
 
-const queryArray = async <T>(sql: string): Promise<T[]> => {
+const queryArray = async <T>(
+  sql: string,
+  values: (string | number)[] = [],
+): Promise<T[]> => {
   try {
-    const [rows] = await connection.query(sql)
+    const [rows] = await connection.query(sql, values)
 
     return (Array.isArray(rows) ? rows : []) as T[]
   } catch (e) {
@@ -41,7 +44,7 @@ const queryArray = async <T>(sql: string): Promise<T[]> => {
 
 
     // TODO сделать что-нибудь с повторением
-    const [rows] = await connection.query(sql)
+    const [rows] = await connection.query(sql, values)
 
     return (Array.isArray(rows) ? rows : []) as T[]
   }
