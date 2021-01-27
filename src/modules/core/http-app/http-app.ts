@@ -13,7 +13,7 @@ export const onHttpRequest = async (
   const { headers, method, url } = req
   const [pathString, queryString] = url.split('?')
 
-  const path = pathString.split('/', PATH_LIMIT).slice(1).filter(Boolean)
+  const path = pathString.split('/', PATH_LIMIT + 1).slice(1).filter(Boolean)
   const params = parse(queryString)
 
   // token, user...
@@ -57,7 +57,7 @@ export const onHttpRequest = async (
     res.setHeader('Content-Type', 'text/plain; charset=utf-8')
 
     // TODO delete
-    res.write(payload.method + '\n\n')
+    res.write(`${ payload.method }: ${ path.length }\n\n`)
     users.forEach(user => res.write(`${user.id}: ${user.name}\n`))
     res.end()
   }

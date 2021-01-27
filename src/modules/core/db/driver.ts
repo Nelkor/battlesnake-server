@@ -1,6 +1,7 @@
 import { createConnection, Connection } from 'mysql2/promise'
 
 import { User } from '@core/core-types'
+import { logDBConnection } from '@core/log/files'
 
 import selectAllUsers from './select-all-users.sql'
 import insertUser from './insert-user.sql'
@@ -15,11 +16,13 @@ export const connect = async (): Promise<void> => {
       database: 'battlesnake',
     })
 
-    // TODO писать в файл
-    connection.on('end', () => console.log('Connection "end"'))
-    connection.on('close', () => console.log('Connection "close"'))
-    connection.on('error', () => console.log('Connection "error"'))
-    connection.on('remove', () => console.log('Connection "remove"'))
+    logDBConnection('connected')
+
+    // Проверяем, какие события приходят от объекта подключения
+    connection.on('end', () => logDBConnection('event "end"'))
+    connection.on('close', () => logDBConnection('event "close"'))
+    connection.on('error', () => logDBConnection('event "error"'))
+    connection.on('remove', () => logDBConnection('event "remove"'))
   } catch (e) {
     console.error('Connection to MariaDB failed')
   }
@@ -41,6 +44,7 @@ const queryAction = async (
   await connection.query(sql, values)
 }
 
+// TODO delete
 export const test = async (): Promise<User[]> => {
   const newUser = [
     Math.random().toString(36).slice(2),
