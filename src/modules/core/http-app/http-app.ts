@@ -2,9 +2,11 @@ import { IncomingMessage, ServerResponse } from 'http'
 import { parse } from 'querystring'
 
 import { PATH_LIMIT, MAX_BODY_SIZE } from '@core/config'
-import { breakConnection } from '@core/server/http-errors'
+import { getToken } from '@core/cookie'
+import { logInByToken } from '@core/users/auth'
 
-import { test } from '@core/db/driver'
+import { breakConnection } from './http-errors'
+import { dispatch } from './http-router'
 
 export const onHttpRequest = async (
   req: IncomingMessage,
@@ -16,11 +18,8 @@ export const onHttpRequest = async (
   const path = pathString.split('/', PATH_LIMIT + 1).slice(1).filter(Boolean)
   const params = parse(queryString)
 
-  // token, user...
-  // const token = getToken(headers.cookie)
-
-  // TODO delete
-  const users = await test()
+  const token = getToken(headers.cookie)
+  const user = logInByToken(res, token)
 
   const contentLength = +headers['content-length']
 
@@ -46,19 +45,17 @@ export const onHttpRequest = async (
 
   const onEnd = () => {
     const payload = {
+      res,
       headers,
-      method,
-      path,
       params,
-      // user,
+      user,
       body: body ? Buffer.concat(body) : null,
     }
 
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+    res.setHeader('Content-Type', 'application/json; charset=utf-8')
 
-    // TODO delete
-    res.write(`${ payload.method }: ${ path.length }\n\n`)
-    users.forEach(user => res.write(`${user.id}: ${user.name}\n`))
+    dispatch(method, path, payload)
+
     res.end()
   }
 

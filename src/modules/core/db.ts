@@ -1,10 +1,9 @@
 import { createConnection, Connection } from 'mysql2/promise'
 
-import { User } from '@core/core-types'
-import { logDBConnection } from '@core/log/files'
+import { logDBConnection } from '@core/log'
 
-import selectAllUsers from './select-all-users.sql'
-import insertUser from './insert-user.sql'
+// import selectAllUsers from './select-all-users.sql'
+// import insertUser from './insert-user.sql'
 
 let connection: Connection = null
 
@@ -28,7 +27,7 @@ export const connect = async (): Promise<void> => {
   }
 }
 
-const queryData = async <T>(
+export const queryData = async <T>(
   sql: string,
   values: (string | number)[] = [],
 ): Promise<T[]> => {
@@ -37,7 +36,7 @@ const queryData = async <T>(
   return (Array.isArray(rows) ? rows : []) as T[]
 }
 
-const queryAction = async (
+export const queryAction = async (
   sql: string,
   values: (string | number)[] = [],
 ): Promise<void> => {
@@ -45,14 +44,14 @@ const queryAction = async (
 }
 
 // TODO delete
-export const test = async (): Promise<User[]> => {
-  const newUser = [
-    Math.random().toString(36).slice(2),
-    Math.round(Math.random() * 1e6),
-    'default_password',
-  ]
-
-  await queryAction(insertUser, newUser)
-
-  return queryData<User>(selectAllUsers)
-}
+// export const test = async (): Promise<User[]> => {
+//   const newUser = [
+//     Math.random().toString(36).slice(2),
+//     Math.round(Math.random() * 1e6),
+//     'default_password',
+//   ]
+//
+//   await queryAction(insertUser, newUser)
+//
+//   return queryData<User>(selectAllUsers)
+// }

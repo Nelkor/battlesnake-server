@@ -1,4 +1,4 @@
-import { startServer } from '@core/server/entry'
-import { connect } from '@core/db/driver'
+import { startServer } from '@core/server'
+import { connect } from '@core/db'
 
 connect().then(startServer)

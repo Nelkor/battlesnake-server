@@ -1,27 +1,32 @@
-import { IncomingHttpHeaders } from 'http'
+import { IncomingHttpHeaders, ServerResponse } from 'http'
 import { ParsedUrlQuery } from 'querystring'
 
 export type RequestPayload = {
+  res: ServerResponse,
   headers: IncomingHttpHeaders
   params: ParsedUrlQuery
   body?: Buffer
 }
 
-// асинхронный обработчик запросов
 export type RouteHandler = (payload: RequestPayload) => Promise<void>
 
-// register сохраняет fn по ключу name
 export type ModuleRouter = {
-  register(name: string, fn: RouteHandler): void
+  get(name: string, fn: RouteHandler): void
+  post(name: string, fn: RouteHandler): void
 }
 
 // register создаёт ModuleRouter и записывает его себе по ключу name
 //
-// dispatch находит ModuleRouter и RouteHandler по path
+// dispatch находит ModuleRouter и RouteHandler по method + path
 // и вызывает RouteHandler с аргументом payload
 export type AppRouter = {
   register(name: string): ModuleRouter
-  dispatch(path: string[], payload: RequestPayload): void
+
+  dispatch(
+    method: string,
+    path: string[],
+    payload: RequestPayload,
+  ): void
 }
 
 
