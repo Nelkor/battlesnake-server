@@ -54,9 +54,7 @@ export const onHttpRequest = async (
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8')
 
-    dispatch(method, path, payload)
-
-    res.end()
+    dispatch(method, path, payload).then(res.end)
   }
 
   req.on('data', onData)

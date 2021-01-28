@@ -13,22 +13,8 @@ export type RouteHandler = (payload: RequestPayload) => Promise<void>
 export type ModuleRouter = {
   get(name: string, fn: RouteHandler): void
   post(name: string, fn: RouteHandler): void
+  find(method: string, name: string): RouteHandler
 }
-
-// register создаёт ModuleRouter и записывает его себе по ключу name
-//
-// dispatch находит ModuleRouter и RouteHandler по method + path
-// и вызывает RouteHandler с аргументом payload
-export type AppRouter = {
-  register(name: string): ModuleRouter
-
-  dispatch(
-    method: string,
-    path: string[],
-    payload: RequestPayload,
-  ): void
-}
-
 
 export type User = {
   id: number
