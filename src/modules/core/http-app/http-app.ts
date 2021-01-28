@@ -3,7 +3,7 @@ import { parse } from 'querystring'
 
 import { PATH_LIMIT, MAX_BODY_SIZE } from '@core/config'
 import { getToken } from '@core/cookie'
-import { logInByToken } from '@core/users/auth'
+import { logInByToken } from '@auth/auth'
 
 import { breakConnection } from './http-errors'
 import { dispatch } from './http-router'
@@ -54,7 +54,7 @@ export const onHttpRequest = async (
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8')
 
-    dispatch(method, path, payload).then(res.end)
+    dispatch(method, path, payload).then(() => res.end())
   }
 
   req.on('data', onData)

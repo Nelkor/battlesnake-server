@@ -12,6 +12,7 @@
     "paths": {
       "@/*": ["./*"],
       "@core/*": ["./modules/core/*"],
+      "@auth/*": ["./modules/auth/*"],
     }
   }
 }
