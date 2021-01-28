@@ -8,23 +8,19 @@ import { logDBConnection } from '@core/log'
 let connection: Connection = null
 
 export const connect = async (): Promise<void> => {
-  try {
-    connection = await createConnection({
-      user: 'snake',
-      password: 'battle',
-      database: 'battlesnake',
-    })
+  connection = await createConnection({
+    user: 'snake',
+    password: 'battle',
+    database: 'battlesnake',
+  })
 
-    logDBConnection('connected')
+  logDBConnection('connected')
 
-    // Проверяем, какие события приходят от объекта подключения
-    connection.on('end', () => logDBConnection('event "end"'))
-    connection.on('close', () => logDBConnection('event "close"'))
-    connection.on('error', () => logDBConnection('event "error"'))
-    connection.on('remove', () => logDBConnection('event "remove"'))
-  } catch (e) {
-    console.error('Connection to MariaDB failed')
-  }
+  // Проверяем, какие события приходят от объекта подключения
+  connection.on('end', () => logDBConnection('event "end"'))
+  connection.on('close', () => logDBConnection('event "close"'))
+  connection.on('error', () => logDBConnection('event "error"'))
+  connection.on('remove', () => logDBConnection('event "remove"'))
 }
 
 export const queryData = async <T>(
