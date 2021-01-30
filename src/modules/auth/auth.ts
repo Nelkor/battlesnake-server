@@ -69,6 +69,37 @@ export const authentication = async (
   return user
 }
 
+export const logOut = (
+  res: ServerResponse,
+  userId: number,
+  token: string,
+  mode: string,
+): void => {
+  // Токен точно существует, т.к. клиент авторизован по нему
+  const tokens = usersTokens.get(userId)
+  const tokenIndex = tokens.indexOf(token)
+
+  switch (mode) {
+    case 'this':
+      tokens.splice(tokenIndex, 1)
+
+      unsetToken(res)
+
+      break
+    case 'all':
+      usersTokens.delete(userId)
+
+      unsetToken(res)
+
+      break
+    case 'others':
+      tokens.length = 0
+      tokens.push(token)
+
+      break
+  }
+}
+
 // TODO протестировать
 const expirationCheck = () => {
   const now = Date.now()

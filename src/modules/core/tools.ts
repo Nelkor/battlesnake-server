@@ -8,7 +8,7 @@ export const jsonParse = (source: string): unknown => {
   }
 }
 
-export const success = (res: ServerResponse, data: unknown): void => {
+export const success = (res: ServerResponse, data?: unknown): void => {
   res.write(JSON.stringify({ success: true, data }))
 }
 

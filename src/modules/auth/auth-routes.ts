@@ -1,35 +1,59 @@
 import { register } from '@core/http-app/http-router'
 import { jsonParse, success, error } from '@core/tools'
 
-import { authentication } from './auth'
+import { authentication, logOut } from './auth'
+import { getUserById } from './model/auth-model'
 
 const authRoutes = register('auth')
 
 authRoutes.get('whoami', async payload => {
-  success(payload.res, 'You rocks')
-})
+  const { res, userId } = payload
 
-authRoutes.post('log-in', async payload => {
-  const authData = jsonParse(payload.body.toString())
-
-  const name = String(authData['name'])
-  const password = String(authData['password'])
-
-  const user = await authentication(payload.res, name, password)
-
-  if (!user) {
-    error(payload.res, 'authentication failed')
+  if (!userId) {
+    success(res, {})
 
     return
   }
 
-  success(payload.res, { id: user.id, name: user.name })
+  const { id, name } = await getUserById(userId)
+
+  success(res, { id, name })
+})
+
+authRoutes.post('log-in', async payload => {
+  const { res, body } = payload
+  const authData = jsonParse(body.toString())
+
+  const name = String(authData['name'])
+  const password = String(authData['password'])
+
+  const user = await authentication(res, name, password)
+
+  if (!user) {
+    error(res, 'authentication failed')
+
+    return
+  }
+
+  success(res, { id: user.id, name: user.name })
 })
 
 authRoutes.post('log-out', async payload => {
-  success(payload.res, 'stub')
+  const { res, body, userId, headers } = payload
+
+  if (!userId) {
+    error(res, 'you are not logged in')
+
+    return
+  }
+
+  const mode = String(jsonParse(body.toString())['mode'])
+  const token = String(headers.token)
+
+  logOut(res, userId, token, mode)
+  success(res)
 })
 
 authRoutes.post('reg', async payload => {
-  success(payload.res, 'stub')
+  success(payload.res)
 })

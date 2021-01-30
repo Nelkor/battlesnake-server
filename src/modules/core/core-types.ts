@@ -5,6 +5,7 @@ export type RequestPayload = {
   res: ServerResponse,
   headers: IncomingHttpHeaders
   params: ParsedUrlQuery
+  userId: number
   body?: Buffer
 }
 
