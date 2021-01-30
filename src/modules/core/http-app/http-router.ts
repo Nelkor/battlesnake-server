@@ -1,6 +1,6 @@
 import { ModuleRouter, RequestPayload, RouteHandler } from '@core/core-types'
 
-import { error } from './http-answers'
+import { error } from '../tools'
 
 const moduleRouters: Map<string, ModuleRouter> = new Map
 

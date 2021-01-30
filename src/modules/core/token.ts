@@ -1,6 +1,5 @@
 import { TokenData } from '@core/core-types'
-
-export const LIFETIME = 1000 * 60 * 60 * 24 * 2
+import { TOKEN_LIFETIME } from '@core/config'
 
 export const createToken = (id: number): string => {
   const secret = Array.from({ length: 6 })
@@ -9,14 +8,14 @@ export const createToken = (id: number): string => {
     .map(char => Math.random() < .5 ? char.toUpperCase() : char)
     .join('')
 
-  return `${id}_${secret}_${Date.now() + LIFETIME}`
+  return `${id}_${secret}_${Date.now() + TOKEN_LIFETIME}`
 }
 
 export const parseToken = (token: string): TokenData => {
   const result = { id: 0, expires: 0 }
   const parts = token.split('_')
 
-  if (parts.length !== 3) {
+  if (parts.length != 3) {
     return result
   }
 

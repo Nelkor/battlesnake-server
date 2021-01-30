@@ -3,7 +3,7 @@ import { parse } from 'querystring'
 
 import { PATH_LIMIT, MAX_BODY_SIZE } from '@core/config'
 import { getToken } from '@core/cookie'
-import { logInByToken } from '@auth/auth'
+import { authorization } from '@auth/auth'
 
 import { breakConnection } from './http-errors'
 import { dispatch } from './http-router'
@@ -19,11 +19,11 @@ export const onHttpRequest = async (
   const params = parse(queryString)
 
   const token = getToken(headers.cookie)
-  const user = logInByToken(res, token)
+  const userId = authorization(res, token)
 
   const contentLength = +headers['content-length']
 
-  const hasBody = method === 'POST'
+  const hasBody = method == 'POST'
     && contentLength
     && contentLength <= MAX_BODY_SIZE
 
@@ -48,7 +48,7 @@ export const onHttpRequest = async (
       res,
       headers,
       params,
-      user,
+      userId,
       body: body ? Buffer.concat(body) : null,
     }
 
