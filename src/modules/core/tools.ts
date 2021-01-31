@@ -1,4 +1,5 @@
 import { ServerResponse } from 'http'
+import { createHash } from 'crypto'
 
 export const jsonParse = (source: string): unknown => {
   try {
@@ -15,3 +16,9 @@ export const success = (res: ServerResponse, data?: unknown): void => {
 export const error = (res: ServerResponse, reason: string): void => {
   res.write(JSON.stringify({ success: false, reason }))
 }
+
+export const getCurrentTimestamp = (): number => Math.floor(Date.now() / 1000)
+
+export const hashString = (str: string): string => createHash('sha1')
+  .update(str)
+  .digest('hex')

@@ -1,11 +1,17 @@
 import { ServerResponse } from 'http'
 
+import {
+  TOKEN_RENEW_LIMIT,
+  DEVICES_COUNT_LIMIT,
+  EXPIRATION_CHECK_INTERVAL,
+} from '@core/config'
+
 import { User } from '@core/core-types'
-import { TOKEN_RENEW_LIMIT, DEVICES_COUNT_LIMIT } from '@core/config'
 import { createToken, parseToken } from '@core/token'
 import { setToken, unsetToken } from '@core/cookie'
+import { hashString } from '@core/tools'
 
-import { getUserByName } from './model/auth-model'
+import { getUserByName, addUser } from './model/auth-model'
 
 const usersTokens: Map<number, string[]> = new Map
 
@@ -47,7 +53,7 @@ export const authentication = async (
 ): Promise<User> => {
   const user = await getUserByName(name)
 
-  if (!user || user.password != password) {
+  if (!user || user.password != hashString(user.name + password)) {
     return null
   }
 
@@ -58,15 +64,37 @@ export const authentication = async (
   const tokens = usersTokens.get(user.id)
   const token = createToken(user.id)
 
+  tokens.push(token)
+
   while (tokens.length > DEVICES_COUNT_LIMIT) {
     tokens.shift()
   }
 
-  tokens.push(token)
-
   setToken(res, token)
 
   return user
+}
+
+export const registration = async (
+  res: ServerResponse,
+  name: string,
+  password: string,
+): Promise<number> => {
+  const user = await getUserByName(name)
+
+  if (user) {
+    return null
+  }
+
+  const hashPassword = hashString(name + password)
+  const id = await addUser(name, hashPassword)
+  const token = createToken(id)
+
+  usersTokens.set(id, [token])
+
+  setToken(res, token)
+
+  return id
 }
 
 export const logOut = (
@@ -100,7 +128,6 @@ export const logOut = (
   }
 }
 
-// TODO протестировать
 const expirationCheck = () => {
   const now = Date.now()
 
@@ -125,4 +152,4 @@ const expirationCheck = () => {
   })
 }
 
-setInterval(expirationCheck, 1000 * 10)
+setInterval(expirationCheck, EXPIRATION_CHECK_INTERVAL)

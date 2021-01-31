@@ -1,9 +1,6 @@
-import { createConnection, Connection } from 'mysql2/promise'
+import { createConnection, Connection, ResultSetHeader } from 'mysql2/promise'
 
 import { logDBConnection } from '@core/log'
-
-// import selectAllUsers from './select-all-users.sql'
-// import insertUser from './insert-user.sql'
 
 let connection: Connection = null
 
@@ -35,19 +32,8 @@ export const queryData = async <T>(
 export const queryAction = async (
   sql: string,
   values: (string | number)[] = [],
-): Promise<void> => {
-  await connection.query(sql, values)
-}
+): Promise<ResultSetHeader> => {
+  const [result] = await connection.query(sql, values)
 
-// TODO delete
-// export const test = async (): Promise<User[]> => {
-//   const newUser = [
-//     Math.random().toString(36).slice(2),
-//     Math.round(Math.random() * 1e6),
-//     'default_password',
-//   ]
-//
-//   await queryAction(insertUser, newUser)
-//
-//   return queryData<User>(selectAllUsers)
-// }
+  return result as ResultSetHeader
+}

@@ -1,22 +1,13 @@
--- Это автоматически сгенерированный скрипт
--- Потом поменяю на нормальный
+CREATE TABLE `users` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` tinytext NOT NULL,
+  `nameHash` int(10) UNSIGNED NOT NULL,
+  `password` tinytext NOT NULL,
 
-START TRANSACTION;
+  `createdAt` INT UNSIGNED NOT NULL,
+  `updatedAt` INT UNSIGNED NOT NULL,
 
-CREATE TABLE `users`
-(
-    `id` int(10) UNSIGNED NOT NULL,
-    `name` tinytext NOT NULL,
-    `nameHash` int(10) UNSIGNED NOT NULL,
-    `password` tinytext NOT NULL
+  PRIMARY KEY (`id`),
+  UNIQUE (`nameHash`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
-
-ALTER TABLE `users`
-    ADD PRIMARY KEY (`id`),
-    ADD UNIQUE KEY `nameHash` (`nameHash`);
-
-ALTER TABLE `users`
-    MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-COMMIT;

@@ -10,3 +10,4 @@ const createLogger = (filename: string) => (text: string) => {
 }
 
 export const logDBConnection = createLogger('db-connections.log')
+export const logExceptions = createLogger('exceptions.log')
