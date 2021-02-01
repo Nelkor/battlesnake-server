@@ -11,7 +11,7 @@ export const startServer = (): void => {
   const wsServer = new Server({ server })
 
   wsServer.on('connection', onRealtimeConnection)
-  server.listen(PORT)
+  server.listen(PORT, 'localhost')
 
   console.log(`Started at ${PORT} port`)
 }
