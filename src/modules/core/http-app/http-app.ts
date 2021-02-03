@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import { parse } from 'querystring'
 
-import { PATH_LIMIT, MAX_BODY_SIZE } from '@core/config'
+import { PATH_LIMIT, PATH_SKIP, MAX_BODY_SIZE } from '@core/config'
 import { getToken } from '@core/cookie'
 import { authorization } from '@auth/auth'
 
@@ -15,7 +15,11 @@ export const onHttpRequest = async (
   const { headers, method, url } = req
   const [pathString, queryString] = url.split('?')
 
-  const path = pathString.split('/', PATH_LIMIT + 1).slice(1).filter(Boolean)
+  const path = pathString
+    .split('/', PATH_LIMIT + PATH_SKIP)
+    .slice(PATH_SKIP)
+    .filter(Boolean)
+
   const params = parse(queryString)
 
   const token = getToken(headers.cookie)
