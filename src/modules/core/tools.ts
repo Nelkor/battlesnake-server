@@ -1,7 +1,7 @@
 import { ServerResponse } from 'http'
 import { createHash } from 'crypto'
 
-export const jsonParse = (source: string): unknown => {
+export const jsonParse = <T>(source: string): T => {
   try {
     return JSON.parse(source) || Object.create(null)
   } catch (e) {

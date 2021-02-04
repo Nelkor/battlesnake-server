@@ -1,6 +1,7 @@
 import { register } from '@core/http-app/http-router'
 import { jsonParse, success, error } from '@core/tools'
 
+import { AuthData, LogOutData } from './auth-types'
 import { authentication, logOut, registration } from './auth'
 import { getUserById } from './model/auth-model'
 
@@ -22,7 +23,7 @@ authRoutes.get('whoami', async payload => {
 
 authRoutes.post('log-in', async payload => {
   const { res, userId, body } = payload
-  const authData = jsonParse(body.toString())
+  const authData = jsonParse<AuthData>(body.toString())
 
   if (userId) {
     error(res, 'you are already logged in')
@@ -30,8 +31,8 @@ authRoutes.post('log-in', async payload => {
     return
   }
 
-  const name = String(authData['name'])
-  const password = String(authData['password'])
+  const name = String(authData.name)
+  const password = String(authData.password)
 
   const user = await authentication(res, name, password)
 
@@ -53,7 +54,7 @@ authRoutes.post('log-out', async payload => {
     return
   }
 
-  const mode = String(jsonParse(body.toString())['mode'])
+  const mode = String(jsonParse<LogOutData>(body.toString()).mode)
   const token = String(headers.token)
 
   logOut(res, userId, token, mode)
@@ -62,7 +63,7 @@ authRoutes.post('log-out', async payload => {
 
 authRoutes.post('reg', async payload => {
   const { res, userId, body } = payload
-  const authData = jsonParse(body.toString())
+  const authData = jsonParse<AuthData>(body.toString())
 
   if (userId) {
     error(res, 'you are already logged in')
@@ -70,8 +71,8 @@ authRoutes.post('reg', async payload => {
     return
   }
 
-  const name = String(authData['name'])
-  const password = String(authData['password'])
+  const name = String(authData.name)
+  const password = String(authData.password)
 
   const id = await registration(res, name, password)
 
