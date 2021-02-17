@@ -14,18 +14,15 @@ export const onHttpRequest = async (
 ): Promise<void> => {
   const { headers, method, url } = req
   const [pathString, queryString] = url.split('?')
+  const params = parse(queryString)
+  const token = getToken(headers.cookie)
+  const userId = authorization(res, token)
+  const contentLength = +headers['content-length']
 
   const path = pathString
     .split('/', PATH_LIMIT + PATH_SKIP)
     .slice(PATH_SKIP)
     .filter(Boolean)
-
-  const params = parse(queryString)
-
-  const token = getToken(headers.cookie)
-  const userId = authorization(res, token)
-
-  const contentLength = +headers['content-length']
 
   const hasBody = method == 'POST'
     && contentLength
