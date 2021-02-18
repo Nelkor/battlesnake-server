@@ -3,7 +3,7 @@ import { jsonParse, success, error } from '@core/tools'
 
 import { AuthData, LogOutData } from './auth-types'
 import { authentication, logOut, registration } from './auth'
-import { getUserById } from './model/auth-model'
+import { getUserById, getUserByName } from './model/auth-model'
 
 const authRoutes = register('auth')
 
@@ -19,6 +19,14 @@ authRoutes.get('whoami', async payload => {
   const { id, name } = await getUserById(userId)
 
   success(res, { id, name })
+})
+
+authRoutes.get('is-name-free', async payload => {
+  const { res, params } = payload
+
+  const user = await getUserByName(String(params['name']))
+
+  success(res, !user)
 })
 
 authRoutes.post('log-in', async payload => {
