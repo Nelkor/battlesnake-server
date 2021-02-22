@@ -5,9 +5,9 @@
   "private": true,
   "scripts": {
     "lint": "eslint --ext .ts src --fix",
-    "build": "rollup -c",
+    "build": "npm run lint && rollup -c",
     "start": "node dist/main.js",
-    "bns": "npm run build && npm start",
+    "lbs": "npm run build && npm start",
     "docker-start": "docker-compose up -d",
     "docker-stop": "docker-compose stop",
     "docker-clear": "docker-compose down"
