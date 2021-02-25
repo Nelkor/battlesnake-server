@@ -32,7 +32,7 @@ export const onHttpRequest = async (
 
   let bodySize = 0
 
-  const onData = chunk => {
+  req.on('data', chunk => {
     bodySize += chunk.length
 
     if (!body || bodySize > MAX_BODY_SIZE) {
@@ -42,9 +42,13 @@ export const onHttpRequest = async (
     }
 
     body.push(chunk)
-  }
+  })
 
-  const onEnd = () => {
+  req.on('end', () => {
+    if (res.writableEnded) {
+      return
+    }
+
     const payload = {
       res,
       headers,
@@ -56,8 +60,5 @@ export const onHttpRequest = async (
     res.setHeader('Content-Type', 'application/json; charset=utf-8')
 
     dispatch(method, path, payload).then(() => res.end())
-  }
-
-  req.on('data', onData)
-  req.on('end', onEnd)
+  })
 }
