@@ -10,7 +10,7 @@
 | Проверить              | `npm run lint`         |
 | Собрать                | `npm run build`        |
 | Запустить              | `npm start`            |
-| Собрать и запустить    | `npm run bns`          |
+| Собрать и запустить    | `npm run lbs`          |
 | Поднять окружение      | `npm run docker-start` |
 | Отставить окружение    | `npm run docker-stop`  |
 | Очистить окружение     | `npm run docker-clear` |
